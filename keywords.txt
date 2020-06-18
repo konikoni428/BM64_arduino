@@ -1,0 +1,28 @@
+#######################################
+# BM64 Arduino Library Syntax Coloring
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+BM64	KEYWORD1
+BM64_event_t	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+getStatus	KEYWORD2
+musicControl	KEYWORD2
+generateTone	KEYWORD2
+mmiAction	KEYWORD2
+powerOn	KEYWORD2
+powerOff	KEYWORD2
+makeCall	KEYWORD2
+getCallStatus	KEYWORD2
+run	KEYWORD2
+setCallback	KEYWORD2	
+
+#######################################
+# Constants (LITERAL1)
+#######################################
