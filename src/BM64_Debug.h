@@ -5,7 +5,7 @@
 
 #ifdef DEBUG
 #include <SoftwareSerial.h>
-#define USE_DEBUG       extern SoftwareSerial swSerial;
+#define USE_DEBUG       extern SoftwareSerial _swSerial;
 #define DPRINT(...)     _swSerial.print(__VA_ARGS__)
 #define DPRINTLN(...)   _swSerial.println(__VA_ARGS__)
 #else
