@@ -6,29 +6,6 @@ void BM64::getStatus(){
     sendCommand(BM64_GET_UART_VERSION_CMD, 0x00);
 }
 
-void BM64::linkBack(){
-    sendCommand(0x17, 0x00);
-}
-
-void BM64::getPhoneName1(){
-    sendCommand(0x16, 0x00, 0x00);
-}
-void BM64::getPhoneName2(){
-    sendCommand(0x16, 0x01, 0x00);
-}
-
-void BM64::getSongName(uint8_t link_index){
-    uint8_t opCode = 0x0B;
-    uint8_t params [22] = {link_index, 0x20, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x07};
-    sendCommand(opCode, params, 23, true);
-}
-
-void BM64::getArtistName(uint8_t link_index){
-    uint8_t opCode = 0x0B;
-    uint8_t params [22] = {link_index, 0x20, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x07};
-    sendCommand(opCode, params, 23, true);
-}
-
 void BM64::musicControl(BM64_music_control_act act){
     sendCommand(BM64_MUSIC_CONTROL_CMD, 0, act);
 }
@@ -39,10 +16,6 @@ void BM64::generateTone(uint8_t param){
 
 void BM64::mmiAction(BM64_mmi_cmd act){
     sendCommand(BM64_MMI_CMD, 0, act);
-}
-
-void BM64::avrcpAction(BM64_avrcp_cmd act){
-    sendCommand(BM64_AVRCP_SPEC_CMD, 0, act);
 }
 
 void BM64::powerOn(){
@@ -78,27 +51,36 @@ BM64_call_status BM64::getCallStatus(){
 
 void BM64::run(){
     if(_serial.available() > 0){
-        if ( _serialGetByte() != 0xAA ) {return;}
-
+        uint8_t b = _serial.read();
+        if(b != 0xAA){
+            return;
+        }
         DPRINTLN("[Received]");
         DPRINTLN("AA found");
         
-        // Skip first length byte (should be zero)
-        if ( _serialGetByte() != 0 ) {return;}
-        uint8_t len = _serialGetByte();
-
+        uint8_t len;
+        if(_serial.available() == 0) delay(2);
+        if(_serial.available() > 0){
+            uint8_t b_0 = _serial.read();
+            if(b_0 != 0) return;
+            len = _serial.read();
+        }
 
         DPRINT("len found: ");
         DPRINTLN(len, HEX);
 
-        uint8_t eventCode = _serialGetByte();
+        if(_serial.available() < len){
+            delay(len);
+        }
+        uint8_t eventCode = _serial.read();
 
         uint8_t *cmd = (uint8_t *)malloc(sizeof(uint8_t) * (len - 1));
         BM64_event_t event = {(BM64_EVENT)eventCode, cmd, len - 1};
 
-        // Get parameter data
         for(int i=0; i<len-1; i++){
-            event.parameter[i] = _serialGetByte();
+            if(_serial.available() > 0){
+                event.parameter[i] = _serial.read();
+            }
         }
 
         DPRINT("event found: ");
@@ -110,7 +92,10 @@ void BM64::run(){
         }
         DPRINTLN("");
 
-        uint8_t v_checksum = _serialGetByte();
+        if(_serial.available() < 1){
+            delay(3);
+        }
+        uint8_t v_checksum = _serial.read();
 
         DPRINT("Checksum: ");
         DPRINTLN(v_checksum, HEX);
@@ -221,10 +206,4 @@ uint8_t BM64::_checksum(uint8_t *start, uint8_t len){
     }
     checksum = ~checksum + 1;
     return checksum;
-}
-
-uint8_t BM64::_serialGetByte(){
-    while(!_serial.available());
-    uint8_t byte = _serial.read();
-    return byte;
 }

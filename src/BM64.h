@@ -18,15 +18,9 @@ public:
         pinMode(txInd, OUTPUT);
     };
     void getStatus();
-    void linkBack();
-    void getPhoneName1();
-    void getPhoneName2();
-    void getSongName(uint8_t link_index);
-    void getArtistName(uint8_t link_index);
     void musicControl(BM64_music_control_act act);
     void generateTone(uint8_t param);
     void mmiAction(BM64_mmi_cmd act);
-    void avrcpAction(BM64_avrcp_cmd act);
     void powerOn();
     void powerOff();
     void makeCall(String *number);
@@ -44,7 +38,6 @@ private:
     void handleEvent(BM64_event_t *event);
     uint8_t* _buildCommand(uint8_t* command, uint8_t opCode, uint8_t* parameter, uint8_t len);
     uint8_t _checksum(uint8_t* start, uint8_t len);
-    uint8_t _serialGetByte();
     bool checkAck(uint8_t opCode);
     void sendCommand(uint8_t opCode, uint8_t *parameter, uint8_t len, bool isCheckAck = true);
     void sendCommand(uint8_t opCode, uint8_t parameter);
