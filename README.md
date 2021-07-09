@@ -7,6 +7,12 @@ Event code and parameter information, Please download Command Set document.
 http://ww1.microchip.com/downloads/en/DeviceDoc/AudioUARTCommandSet_v2%2002.docx
 
 
+# How to Use
+1. Download ZIP
+2. Install library from zip  
+https://www.arduino.cc/en/guide/libraries#toc4
+3. Complete! You can see example from File->Examples->BM64
+
 # Licence 
 Copyright (c) 2020 Masahiro Konishi
 
