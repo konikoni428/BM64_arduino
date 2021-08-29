@@ -190,7 +190,7 @@ void BM64::sendCommand(uint8_t opCode, uint8_t parameter){
 }
 
 void BM64::sendCommand(uint8_t opCode, int link_index, uint8_t parameter){
-    uint8_t params[2] = {link_index, parameter};
+    uint8_t params[2] = { (uint8_t) link_index, parameter};
     sendCommand(opCode, params, 3);
 }
 
